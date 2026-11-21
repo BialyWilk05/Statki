@@ -22,6 +22,7 @@ private:
     vector<StanPola> siatka;
     vector<unique_ptr<Statek>> statki;
     int indeks(const Pole& p) const;
+    bool czySasiadujeZeStatkiem(const Pole& p) const;
 
 public:
     Plansza();

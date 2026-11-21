@@ -27,6 +27,21 @@ StanPola Plansza::getStan(const Pole& p) const
     return siatka[indeks(p)];
 }
 
+bool Plansza::czySasiadujeZeStatkiem(const Pole& p) const
+{
+    // sprawdza 8 pol wokol (boki i rogi), pola poza plansza sa pomijane
+    for (int dw = -1; dw <= 1; dw++)
+    {
+        for (int dk = -1; dk <= 1; dk++)
+        {
+            Pole sasiad(p.getKolumna() + dk, p.getWiersz() + dw);
+            if (czyWPlanszy(sasiad) && siatka[indeks(sasiad)] == StanPola::Statek)
+                return true;
+        }
+    }
+    return false;
+}
+
 void Plansza::ustawStatek(unique_ptr<Statek> statek, const Pole& poczatek, bool poziomo)
 {
     vector<Pole> pola;
@@ -38,6 +53,8 @@ void Plansza::ustawStatek(unique_ptr<Statek> statek, const Pole& poczatek, bool 
             throw out_of_range("Statek wychodzi poza plansze");
         if (siatka[indeks(p)] != StanPola::Puste)
             throw PoleZajeteException();
+        if (czySasiadujeZeStatkiem(p))
+            throw PoleZajeteException("Statki nie moga sie stykac (takze rogami)");
         pola.push_back(p);
     }
     for (const Pole& p : pola)
